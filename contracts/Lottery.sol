@@ -8,15 +8,20 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
 
+import {VRFConsumerBaseV2} from "@chainlink/contracts/src/v0.8/vrf/VRFConsumerBaseV2.sol";
+
 error Lottery__NotEnoughEthSent();
 
-contract Lottery {
+contract Lottery is VRFConsumerBaseV2 {
     uint256 private immutable i_entranceFee;
     address payable[] private s_players;
 
     event LotteryEnter(address indexed player);
 
-    constructor(uint256 entranceFee) {
+    constructor(
+        address vrfCoordinator,
+        uint256 entranceFee
+    ) VRFConsumerBaseV2(vrfCoordinator) {
         i_entranceFee = entranceFee;
     }
 
@@ -29,7 +34,15 @@ contract Lottery {
         emit LotteryEnter(msg.sender);
     }
 
-    function pickRandomNumber() public {}
+    function pickRandomNumber() external {
+        // Request random number
+        // 2 transaction process
+    }
+
+    function fulfillRandomWords(
+        uint256 requestId,
+        uint256[] memory randomWords
+    ) internal override {}
 
     function getEntranceFee() public view returns (uint256) {
         return i_entranceFee;
