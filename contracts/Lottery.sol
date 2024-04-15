@@ -20,6 +20,12 @@ error Lottery__UpkeepNotNeeded(
     uint256 lotteryState
 );
 
+/**
+ * @title A simple Lottery Contract
+ * @author Varun Kolanu
+ * @notice A contract to create untamperable decentralized smart contract
+ * @dev This implements VRF V2.0 and Automation of Chainlink
+ */
 contract Lottery is VRFConsumerBaseV2, AutomationCompatibleInterface {
     // Types
     enum LotteryState {
@@ -77,7 +83,7 @@ contract Lottery is VRFConsumerBaseV2, AutomationCompatibleInterface {
     function performUpkeep(bytes calldata /*performData*/) external override {
         // Request random number
         // 2 transaction process
-        (bool upkeepNeeded, ) = this.checkUpkeep("");
+        (bool upkeepNeeded, ) = checkUpkeep("");
         if (!upkeepNeeded)
             revert Lottery__UpkeepNotNeeded(
                 address(this).balance,
@@ -121,7 +127,7 @@ contract Lottery is VRFConsumerBaseV2, AutomationCompatibleInterface {
      * @return performData Additional data, if any, required for performing upkeep, encoded as bytes.
      */
     function checkUpkeep(
-        bytes calldata /* checkData */
+        bytes memory /* checkData */
     )
         public
         view
@@ -145,5 +151,26 @@ contract Lottery is VRFConsumerBaseV2, AutomationCompatibleInterface {
 
     function getRecentWInner() public view returns (address payable) {
         return s_recentWinner;
+    }
+
+    function getLotteryState() public view returns (LotteryState) {
+        return s_lotteryState;
+    }
+
+    function getNumWords() public pure returns (uint32) {
+        // pure: from hash of abi
+        return NUM_WORDS;
+    }
+
+    function getRequestConfirmations() public pure returns (uint16) {
+        return REQUEST_CONFIRMATIONS;
+    }
+
+    function getPlayers() public view returns (uint256) {
+        return s_players.length;
+    }
+
+    function getLatestTimeStamp() public view returns (uint256) {
+        return s_lastTimestamp;
     }
 }
