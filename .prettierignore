@@ -1,12 +1,9 @@
 node_modules
+img
 artifacts
 cache
-coverage*
-gasReporterOutput.json
-package.json
-img
+coverage
 .env
 .*
 README.md
 coverage.json
-deployments
